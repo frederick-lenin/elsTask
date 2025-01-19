@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import LoginSerializer
+from .serializers import LoginAdminSerializer, LoginSerializer
 # from rest_framework_simplejwt.tokens import RefreshToken
 # from rest_framework.decorators import api_view
 # from django.contrib.auth.hashers import check_passwordtoken
@@ -69,7 +69,7 @@ def signup(request):
             return HttpResponse(f"correct details already exists")
         student = Student(name=name,email=email,password=password,Role=role)
         student.save()
-        user = LoginSerializer(Student)
+        user = LoginSerializer(student)
         Refresh = RefreshToken.for_user(user)
         acess =Refresh.access_token
         return Response({
@@ -80,10 +80,33 @@ def signup(request):
         },status= status.HTTP_201_CREATED)
                         
 
+
+    
+    
+    
+@api_view(['POST'])
+def login(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        roleid =request.POST.get('roleid')
         
-    
-    
-    
+        try:
+            data = Admin.objects.get(roleid=roleid, name = name)
+
+            data = LoginAdminSerializer(data).data
+
+            refresh = RefreshToken.for_user(data)
+            access = refresh.access_token
+            
+            return Response({
+                'refresh': str(refresh),
+                'access': str(access),
+            })
+        except Admin.DoesNotExist():
+            return Response (
+                {'details' : 'Invalid Credentials'}
+            )
+
     
     
     
