@@ -87,11 +87,11 @@ def signup(request):
 @api_view(['POST'])
 def login(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        roleid =request.POST.get('roleid')
+        email = request.POST.get('email')
+        password =request.POST.get('password')
         
         try:
-            data = Admin.objects.get(roleid=roleid, name = name)
+            data = Student.objects.get(email=email, password = password)
 
             data = LoginAdminSerializer(data).data
 
@@ -102,7 +102,7 @@ def login(request):
                 'refresh': str(refresh),
                 'access': str(access),
             })
-        except Admin.DoesNotExist():
+        except Student.DoesNotExist():
             return Response (
                 {'details' : 'Invalid Credentials'}
             )

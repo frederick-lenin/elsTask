@@ -9,5 +9,5 @@ class LoginSerializer(serializers.ModelSerializer):
 
 class LoginAdminSerializer(serializers.ModelSerializer):
     class Meta:
-        model= Admin
-        fields = ["name","roleid"]
+        model= Student
+        fields = ["name","email", "Role"]
